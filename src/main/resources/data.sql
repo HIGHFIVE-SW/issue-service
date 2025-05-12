@@ -8,7 +8,7 @@ INSERT INTO issues (
     keyword
 ) VALUES
       (
-          UUID(),
+          UNHEX(REPLACE(UUID(), '-', '')),
           '첫 번째 이슈 제목',
           '이것은 더미 콘텐츠입니다 – 첫 번째 이슈 예시입니다.',
           '2025-05-01 09:00:00',
@@ -17,7 +17,7 @@ INSERT INTO issues (
           'Environment'
       ),
       (
-          UUID(),
+          UNHEX(REPLACE(UUID(), '-', '')),
           '두 번째 이슈 제목',
           '이것은 더미 콘텐츠입니다 – 두 번째 이슈 예시입니다.',
           '2025-05-02 10:30:00',
@@ -26,7 +26,7 @@ INSERT INTO issues (
           'Environment'
       ),
       (
-          UUID(),
+          UNHEX(REPLACE(UUID(), '-', '')),
           '세 번째 이슈 제목',
           '이것은 더미 콘텐츠입니다 – 세 번째 이슈 예시입니다.',
           '2025-05-03 11:45:00',
@@ -35,7 +35,7 @@ INSERT INTO issues (
           'Society'
       ),
       (
-          UUID(),
+          UNHEX(REPLACE(UUID(), '-', '')),
           '네 번째 이슈 제목',
           '이것은 더미 콘텐츠입니다 – 네 번째 이슈 예시입니다.',
           '2025-05-04 14:15:00',
@@ -44,7 +44,7 @@ INSERT INTO issues (
           'Society'
       ),
       (
-          UUID(),
+          UNHEX(REPLACE(UUID(), '-', '')),
           '다섯 번째 이슈 제목',
           '이것은 더미 콘텐츠입니다 – 다섯 번째 이슈 예시입니다.',
           '2025-05-05 16:20:00',

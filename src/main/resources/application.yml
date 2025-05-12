@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: issue-service
   cloud:
     openfeign:
       client:
@@ -28,7 +28,7 @@ spring:
         use_sql_comments: true
     defer-datasource-initialization: true
 
-server-uri: http://localhost:8080
+server-uri: http://localhost:8083
 
 eureka:
   client:
