@@ -1,5 +1,7 @@
 package com.trendist.issue_service.domain.issue.controller;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllResponse;
+import com.trendist.issue_service.domain.issue.dto.response.IssueGetResponse;
 import com.trendist.issue_service.domain.issue.service.IssueService;
 import com.trendist.issue_service.global.response.ApiResponse;
 
@@ -24,10 +27,15 @@ public class IssueController {
 		return ApiResponse.onSuccess(issueService.getAllIssues(page));
 	}
 
-	@GetMapping("/{keyword}")
+	@GetMapping("/keyword/{keyword}")
 	public ApiResponse<Page<IssueGetAllResponse>> getAllIssuesByKeyword(
 		@RequestParam(defaultValue = "0") int page,
 		@PathVariable(name = "keyword") String keyword) {
 		return ApiResponse.onSuccess(issueService.getAllIssuesByKeyword(page, keyword));
+	}
+
+	@GetMapping("/{id}")
+	public ApiResponse<IssueGetResponse> getIssue(@PathVariable(name = "id") UUID id) {
+		return ApiResponse.onSuccess(issueService.getIssue(id));
 	}
 }
