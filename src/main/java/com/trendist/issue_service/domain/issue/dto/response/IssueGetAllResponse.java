@@ -11,9 +11,6 @@ import lombok.Builder;
 public record IssueGetAllResponse(
 	UUID id,
 	String title,
-	String content,
-	LocalDateTime issueDate,
-	String siteUrl,
 	String imageUrl,
 	String keyword
 ) {
@@ -21,9 +18,6 @@ public record IssueGetAllResponse(
 		return IssueGetAllResponse.builder()
 			.id(issue.getId())
 			.title(issue.getTitle())
-			.content(issue.getContent())
-			.issueDate(issue.getIssueDate())
-			.siteUrl(issue.getSiteUrl())
 			.imageUrl(issue.getImageUrl())
 			.keyword(issue.getKeyword())
 			.build();

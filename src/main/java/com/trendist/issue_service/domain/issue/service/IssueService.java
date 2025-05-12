@@ -17,8 +17,14 @@ public class IssueService {
 	private final IssueRepository issueRepository;
 
 	public Page<IssueGetAllResponse> getAllIssues(int page) {
-		Pageable pageable = PageRequest.of(page, 10, Sort.by("issueDate").descending());
+		Pageable pageable = PageRequest.of(page, 12, Sort.by("issueDate").descending());
 		return issueRepository.findAll(pageable)
+			.map(IssueGetAllResponse::from);
+	}
+
+	public Page<IssueGetAllResponse> getAllIssuesByKeyword(int page, String keyword) {
+		Pageable pageable = PageRequest.of(page, 12, Sort.by("issueDate").descending());
+		return issueRepository.findAllByKeyword(pageable, keyword)
 			.map(IssueGetAllResponse::from);
 	}
 }
