@@ -5,10 +5,12 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trendist.issue_service.domain.issue.dto.response.BookmarkResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetResponse;
 import com.trendist.issue_service.domain.issue.service.IssueService;
@@ -37,5 +39,10 @@ public class IssueController {
 	@GetMapping("/{id}")
 	public ApiResponse<IssueGetResponse> getIssue(@PathVariable(name = "id") UUID id) {
 		return ApiResponse.onSuccess(issueService.getIssue(id));
+	}
+
+	@PostMapping("{id}/bookmark")
+	public ApiResponse<BookmarkResponse> toggleBookmark(@PathVariable(name = "id") UUID id) {
+		return ApiResponse.onSuccess(issueService.toggleBookmark(id));
 	}
 }
