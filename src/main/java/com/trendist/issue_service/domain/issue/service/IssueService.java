@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.trendist.issue_service.domain.issue.domain.Issue;
 import com.trendist.issue_service.domain.issue.domain.IssueBookmark;
 import com.trendist.issue_service.domain.issue.dto.response.BookmarkResponse;
+import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllBookmarkedResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetResponse;
 import com.trendist.issue_service.domain.issue.repository.IssueBookmarkRepository;
@@ -75,5 +76,14 @@ public class IssueService {
 		}
 
 		return BookmarkResponse.of(bookmark, bookmarked);
+	}
+
+	public Page<IssueGetAllBookmarkedResponse> getAllIssuesBookmarked(int page) {
+		UUID userId = userServiceClient.getMyProfile("").getResult().id();
+
+		Pageable pageable = PageRequest.of(page, 10, Sort.by("issue.issueDate").descending());
+
+		return issueBookmarkRepository.findAllByUserId(userId, pageable)
+			.map(IssueGetAllBookmarkedResponse::from);
 	}
 }
