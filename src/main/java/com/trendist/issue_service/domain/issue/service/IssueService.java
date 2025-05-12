@@ -1,6 +1,9 @@
 package com.trendist.issue_service.domain.issue.service;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,22 +34,51 @@ public class IssueService {
 	private final UserServiceClient userServiceClient;
 
 	public Page<IssueGetAllResponse> getAllIssues(int page) {
+		UUID userId = userServiceClient.getMyProfile("").getResult().id();
 		Pageable pageable = PageRequest.of(page, 12, Sort.by("issueDate").descending());
-		return issueRepository.findAll(pageable)
-			.map(IssueGetAllResponse::from);
+
+		Page<Issue> issues = issueRepository.findAll(pageable);
+		List<UUID> issueIds = issues.stream()
+			.map(Issue::getId)
+			.toList();
+
+		List<IssueBookmark> bookmarks = issueBookmarkRepository.findAllByUserIdAndIssue_IdIn(userId, issueIds);
+		Set<UUID> bookmarkIds = bookmarks.stream()
+			.map(IssueBookmark::getIssue)
+			.map(Issue::getId)
+			.collect(Collectors.toSet());
+
+		return issues.map(issue ->
+			IssueGetAllResponse.of(issue, bookmarkIds.contains(issue.getId())));
 	}
 
 	public Page<IssueGetAllResponse> getAllIssuesByKeyword(int page, String keyword) {
+		UUID userId = userServiceClient.getMyProfile("").getResult().id();
 		Pageable pageable = PageRequest.of(page, 12, Sort.by("issueDate").descending());
-		return issueRepository.findAllByKeyword(pageable, keyword)
-			.map(IssueGetAllResponse::from);
+
+		Page<Issue> issues = issueRepository.findAllByKeyword(pageable, keyword);
+		List<UUID> issueIds = issues.stream()
+			.map(Issue::getId)
+			.toList();
+
+		List<IssueBookmark> bookmarks = issueBookmarkRepository.findAllByUserIdAndIssue_IdIn(userId, issueIds);
+		Set<UUID> bookmarkIds = bookmarks.stream()
+			.map(IssueBookmark::getIssue)
+			.map(Issue::getId)
+			.collect(Collectors.toSet());
+
+		return issues.map(issue ->
+			IssueGetAllResponse.of(issue, bookmarkIds.contains(issue.getId())));
 	}
 
 	public IssueGetResponse getIssue(UUID id) {
+		UUID userId = userServiceClient.getMyProfile("").getResult().id();
+
 		Issue issue = issueRepository.findById(id)
 			.orElseThrow(() -> new ApiException(ErrorStatus._ISSUE_NOT_FOUND));
 
-		return IssueGetResponse.from(issue);
+		boolean bookmarked = issueBookmarkRepository.existsByUserIdAndIssue_Id(userId, id);
+		return IssueGetResponse.of(issue, bookmarked);
 	}
 
 	@Transactional

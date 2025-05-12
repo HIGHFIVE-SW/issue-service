@@ -1,5 +1,6 @@
 package com.trendist.issue_service.domain.issue.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,4 +18,6 @@ public interface IssueBookmarkRepository extends JpaRepository<IssueBookmark, UU
 	void deleteByUserIdAndIssue_Id(UUID userId, UUID issueId);
 
 	Page<IssueBookmark> findAllByUserId(UUID userId, Pageable pageable);
+
+	List<IssueBookmark> findAllByUserIdAndIssue_IdIn(UUID userId, List<UUID> issueIds);
 }

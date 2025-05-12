@@ -15,9 +15,10 @@ public record IssueGetResponse(
 	LocalDateTime issueDate,
 	String siteUrl,
 	String imageUrl,
-	String keyword
+	String keyword,
+	Boolean bookmarked
 ) {
-	public static IssueGetResponse from(Issue issue) {
+	public static IssueGetResponse of(Issue issue, Boolean bookmarked) {
 		return IssueGetResponse.builder()
 			.id(issue.getId())
 			.title(issue.getTitle())
@@ -26,6 +27,7 @@ public record IssueGetResponse(
 			.siteUrl(issue.getSiteUrl())
 			.imageUrl(issue.getImageUrl())
 			.keyword(issue.getKeyword())
+			.bookmarked(bookmarked)
 			.build();
 	}
 }
