@@ -14,6 +14,7 @@ import com.trendist.issue_service.domain.issue.dto.response.BookmarkResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllBookmarkedResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetResponse;
+import com.trendist.issue_service.domain.issue.dto.response.IssueSearchResponse;
 import com.trendist.issue_service.domain.issue.service.IssueService;
 import com.trendist.issue_service.global.response.ApiResponse;
 
@@ -72,5 +73,17 @@ public class IssueController {
 	public ApiResponse<Page<IssueGetAllBookmarkedResponse>> getAllIssuesBookmarked(
 		@RequestParam(defaultValue = "0") int page) {
 		return ApiResponse.onSuccess(issueService.getAllIssuesBookmarked(page));
+	}
+
+	@Operation(
+		summary = "이슈 검색",
+		description = "사용자가 이슈에 특정 단어를 입력하여 해당하는 이슈를 검색합니다"
+	)
+	@GetMapping("/search")
+	public ApiResponse<Page<IssueSearchResponse>> searchIssues(
+		@RequestParam String keyword,
+		@RequestParam(defaultValue = "0") int page
+	) {
+		return ApiResponse.onSuccess(issueService.searchIssues(keyword, page));
 	}
 }
