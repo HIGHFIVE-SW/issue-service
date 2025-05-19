@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trendist.issue_service.domain.issue.dto.response.BookmarkResponse;
-import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllBookmarkedResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueSearchResponse;
@@ -63,16 +62,6 @@ public class IssueController {
 	@PostMapping("{id}/bookmark")
 	public ApiResponse<BookmarkResponse> toggleBookmark(@PathVariable(name = "id") UUID id) {
 		return ApiResponse.onSuccess(issueService.toggleBookmark(id));
-	}
-
-	@Operation(
-		summary = "마이페이지 북마크한 이슈 조회",
-		description = "사용자가 북마크한 이슈들을 조회합니다."
-	)
-	@GetMapping("/bookmark")
-	public ApiResponse<Page<IssueGetAllBookmarkedResponse>> getAllIssuesBookmarked(
-		@RequestParam(defaultValue = "0") int page) {
-		return ApiResponse.onSuccess(issueService.getAllIssuesBookmarked(page));
 	}
 
 	@Operation(
