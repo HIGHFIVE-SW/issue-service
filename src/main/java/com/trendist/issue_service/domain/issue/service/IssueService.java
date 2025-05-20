@@ -1,29 +1,37 @@
 package com.trendist.issue_service.domain.issue.service;
 
+import java.nio.ByteBuffer;
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.trendist.issue_service.domain.issue.domain.Issue;
 import com.trendist.issue_service.domain.issue.domain.IssueBookmark;
+import com.trendist.issue_service.domain.issue.domain.IssueDocument;
 import com.trendist.issue_service.domain.issue.dto.response.BookmarkResponse;
-import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllBookmarkedResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetAllResponse;
 import com.trendist.issue_service.domain.issue.dto.response.IssueGetResponse;
+import com.trendist.issue_service.domain.issue.dto.response.IssueSearchResponse;
 import com.trendist.issue_service.domain.issue.repository.IssueBookmarkRepository;
 import com.trendist.issue_service.domain.issue.repository.IssueRepository;
 import com.trendist.issue_service.global.exception.ApiException;
 import com.trendist.issue_service.global.feign.user.client.UserServiceClient;
 import com.trendist.issue_service.global.response.status.ErrorStatus;
 
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,6 +40,7 @@ public class IssueService {
 	private final IssueRepository issueRepository;
 	private final IssueBookmarkRepository issueBookmarkRepository;
 	private final UserServiceClient userServiceClient;
+	private final ElasticsearchOperations esOps;
 
 	public Page<IssueGetAllResponse> getAllIssues(int page) {
 		UUID userId = userServiceClient.getMyProfile("").getResult().id();
@@ -110,12 +119,42 @@ public class IssueService {
 		return BookmarkResponse.of(bookmark, bookmarked);
 	}
 
-	public Page<IssueGetAllBookmarkedResponse> getAllIssuesBookmarked(int page) {
+	public Page<IssueSearchResponse> searchIssues(String keyword, int page) {
+		Pageable pageable = PageRequest.of(page, 12);
+
+		NativeQuery query = NativeQuery.builder()
+			.withQuery(q -> q
+				.wildcard(w -> w
+					.field("title.keyword")
+					.value("*" + keyword + "*")
+				)
+			)
+			.withSort(s -> s.field(f -> f
+					.field("issue_date.keyword")
+					.order(SortOrder.Desc)
+				)
+			)
+			.withPageable(pageable)
+			.build();
+
+		SearchHits<IssueDocument> hits = esOps.search(query, IssueDocument.class);
+
 		UUID userId = userServiceClient.getMyProfile("").getResult().id();
 
-		Pageable pageable = PageRequest.of(page, 10, Sort.by("issue.issueDate").descending());
+		List<IssueSearchResponse> content = hits.getSearchHits().stream()
+			.map(hit -> {
+				IssueDocument doc = hit.getContent();
 
-		return issueBookmarkRepository.findAllByUserId(userId, pageable)
-			.map(IssueGetAllBookmarkedResponse::from);
+				byte[] bytes = Base64.getDecoder().decode(doc.getId());
+				ByteBuffer bb = ByteBuffer.wrap(bytes);
+				UUID uuid = new UUID(bb.getLong(), bb.getLong());
+
+				boolean bookmarked = issueBookmarkRepository
+					.existsByUserIdAndIssue_Id(userId, uuid);
+				return IssueSearchResponse.from(doc, bookmarked);
+			})
+			.toList();
+
+		return new PageImpl<>(content, pageable, hits.getTotalHits());
 	}
 }
