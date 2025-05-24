@@ -29,7 +29,7 @@ spring:
     uris: http://158.180.74.204:9200
     connection-timeout: 1000
 
-server-uri: http://61.109.236.137:8083
+server-uri: http://61.109.236.137:8000
 
 eureka:
   client:
