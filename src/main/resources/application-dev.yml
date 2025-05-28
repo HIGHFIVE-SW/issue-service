@@ -12,7 +12,7 @@ spring:
             connect-timeout: 5000
             read-timeout: 5000
   datasource:
-    url: ENC(bj5rjBHKCWXBxVwe4zCKyWTUoY2oCJOs7Ch8KUBk7sFyCog1EZX1x4p7TKTRR3F471R7ybnAcSQKRFL2Emv0132VdrI0ol0tD2KDvST6UjAaVaqXezjkXGPhSuqPvZnV)
+    url: ENC(lgfGglqkN8hXZZYoP8yOpxL0VNXSL1FUHwBIJQiYGvlKj2mzgGgOh52J5lvAKDOPGdqPKXcr3rwVKWlx0FMnOcHbsY+zKdEsD1C9GdLoD9UpP6L6C0PeRDJ791eLFZrp)
     username: admin
     password: ENC(QVbtpz0AuhVhRLaizjbEJqj0gBkeZ4Oq)
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,7 +26,7 @@ spring:
         use_sql_comments: true
     defer-datasource-initialization: true
   elasticsearch:
-    uris: http://158.180.74.204:9200
+    uris: http://210.109.81.201:9200
     connection-timeout: 1000
 
 server-uri: http://61.109.236.137:8000
