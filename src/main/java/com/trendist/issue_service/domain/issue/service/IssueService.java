@@ -151,7 +151,7 @@ public class IssueService {
 
 				boolean bookmarked = issueBookmarkRepository
 					.existsByUserIdAndIssue_Id(userId, uuid);
-				return IssueSearchResponse.from(doc, bookmarked);
+				return IssueSearchResponse.of(doc, bookmarked);
 			})
 			.toList();
 

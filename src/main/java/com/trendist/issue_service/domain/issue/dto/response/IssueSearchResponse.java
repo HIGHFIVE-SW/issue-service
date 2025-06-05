@@ -17,7 +17,7 @@ public record IssueSearchResponse(
 	String imageUrl,
 	Boolean bookmarked
 ) {
-	public static IssueSearchResponse from(IssueDocument issueDocument, Boolean bookmarked) {
+	public static IssueSearchResponse of(IssueDocument issueDocument, Boolean bookmarked) {
 		byte[] bytes = Base64.getDecoder().decode(issueDocument.getId());
 		ByteBuffer bb = ByteBuffer.wrap(bytes);
 		UUID uuid = new UUID(bb.getLong(), bb.getLong());
