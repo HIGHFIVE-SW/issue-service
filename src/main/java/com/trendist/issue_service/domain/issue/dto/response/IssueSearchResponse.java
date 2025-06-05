@@ -14,6 +14,7 @@ public record IssueSearchResponse(
 	String title,
 	String keyword,
 	String issueDate,
+	String imageUrl,
 	Boolean bookmarked
 ) {
 	public static IssueSearchResponse from(IssueDocument issueDocument, Boolean bookmarked) {
@@ -26,6 +27,7 @@ public record IssueSearchResponse(
 			.title(issueDocument.getTitle())
 			.keyword(issueDocument.getKeyword())
 			.issueDate(issueDocument.getIssueDate())
+			.imageUrl(issueDocument.getImageUrl())
 			.bookmarked(bookmarked)
 			.build();
 	}
